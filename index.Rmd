@@ -1,0 +1,119 @@
+---
+title: HITCalculator v1.0
+author: M.B. Moran - 18 April 2015
+framework: deckjs
+deckjs:
+  theme: web-2.0
+highlighter: highlight.js
+hitheme    : solarized_light
+widgets    : [mathjax, bootstrap, quiz, shiny, interactive]
+mode : selfcontained
+url:
+  lib: ../../libraries
+---
+
+## Introducing HITCalculator v1.0!
+
+1. <h3>What this shiny app does:</h3>
+   
+&nbsp;&nbsp;&nbsp;&nbsp;The HITCalculator is a simple, novel app that does 3 cool things:  
+   
+&nbsp;&nbsp;&nbsp;&nbsp;a.  Calculates HIT - a Vaccination (or herd immunity) threshold based on 2 user inputs  
+&nbsp;&nbsp;&nbsp;&nbsp;b.  Displays a histogram of USA 2013 MMR vaccination rates for Children (19-35 mos)  
+&nbsp;&nbsp;&nbsp;&nbsp;c.  Displays 2 USA state maps:   
+     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(i)  States colored by MMR vaccination level   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(ii) States colored to show those which fall below the calculated HIT or at/above the HIT  
+
+---
+
+## 2. Why the app is important
+
+> - Unique! - a similar app does not yet exist in the public domain  
+> - Insightful! - a benchmark combined with state vaccination rates provides important context for evaluating potential measles outbreak risks  
+> - Graphs! - plots and graphs make it easy to visualize the statistical frequency and regional differences  
+> - Simple! - only two imputs required  
+
+---
+
+## 3. Who may be interested?
+<h3> Potential Users/Stakeholders:</h3>
+```{r echo=FALSE}
+plot.new()
+par(mar=c(0,0,0,0)+.1)
+plot.window(xlim=c(0,3), ylim=c(0,8))
+xspline( c(1,1.25,1.75,2), c(6,6,4,4), s=1, lwd=32.8/4.5, border="#0000ff88", lend=1 )
+xspline( c(1,1.25,1.75,2), c(5,5,4,4), s=1, lwd=32.8/4.5, border="#0000ff88", lend=1 )
+xspline( c(1,1.25,1.75,2), c(4,4,4,4), s=1, lwd=32.8/4.5, border="#0000ff88", lend=1 )
+xspline( c(1,1.25,1.75,2), c(3,3,4,4), s=1, lwd=32.8/4.5, border="#0000ff88", lend=1 )
+xspline( c(1,1.25,1.75,2), c(2,2,4,4), s=1, lwd=32.8/4.5, border="#0000ff88", lend=1 )
+xspline( c(1,1.25,1.75,2), c(1,1,4,4), s=1, lwd=32.8/4.5, border="#0000ff88", lend=1 )
+
+text( rep(0.5, 6), 6:1, c("You","Public Health Officials","Health Providers","Payors/Insurers","Lawmakers","Parents"))
+
+#text( rep(0.75, 6), 6:1, c("You","Public Health Officials","Health Providers","Payors/Insurers","Lawmakers","Parents"))
+#text( 2.25, 4, 'HITCalculator App Users')
+text( 2.5, 4, 'HITCalculator App Users')
+
+```
+
+
+--- 
+
+
+## 4. How it works
+
+A sample calculation of an HIT (Herd Immunity Threshold):
+
+$$V_c=\frac{1-1/R_0}{E}$$
+
+R=Basic Reproduction Number between 12-18 for measles.   
+CHOOSE 12
+
+E = Effectiveness of the immunity/vaccine.  
+CHOOSE 1.00
+
+```{r, echo=FALSE}
+r0<-12
+e<-1
+Vc<-(1-1/r0)/e *100
+
+cat("Ro entered= ",r0)
+cat("E entered= ",e)
+cat("Vc calculated= ",Vc," %")
+
+```
+
+--- 
+
+
+## 5. Example of Plot Output Produced
+
+Here is the shiny app "plot" histogram produced by R code embedded in this slidify presentation:
+
+```{r, echo=FALSE}
+library(ggplot2)
+setwd("~/Actuarial/Coursera/Data Science/Developing Data Products/Project/myshinyapp")
+tf<-read.csv("tab03_antigen_state_2013_MMR_50states.csv",stringsAsFactors = FALSE)
+        r0 <- 12
+        e <- 1
+        hit<-(1-1/r0)/e
+        
+        dd <- with(density(tf$num), data.frame(x,y))
+        g<-ggplot(data=tf, aes(tf$num),environment = environment()) + 
+            geom_histogram(breaks=seq(85, 100, by =0.5), 
+                           col="red", 
+                           aes(fill=..count..))
+        
+        p <- g + 
+            scale_x_continuous(breaks=seq(85,100,by=1),limits=c(85,100),name="MMR Vacination Rate (per 100)")+
+            scale_y_continuous(breaks = round(seq(0,max(dd$y)*length(tf$num)+1,by=1),0), name="Number of States") +
+            geom_vline(aes(xintercept = hit*100), color = "red", linetype="dashed",show_guide=FALSE) +
+            geom_text(aes(99, 7, label="Calculated HIT"),show_guide=FALSE,color="red") +
+            geom_text(aes(99, 6.5, label=paste(round(hit*100,digits=1))),show_guide=FALSE,color="red") +
+            theme_classic()
+        print(p)
+
+```
+
+

@@ -1,15 +1,15 @@
 ---
-title: HITCalculator v1.0
-author: M.B. Moran - 18 April 2015
-framework: deckjs
+title     :  HITCalculator v1.0
+author    : MB Moran - 18 April 2015
+framework : deckjs
+deckjs: 
+  theme: web-2.0
 highlighter: highlight.js
-hitheme    : solarized_light
-widgets    : [mathjax, bootstrap, quiz, shiny, interactive]
-mode : selfcontained
-url:
-  lib: ../../libraries
----
+hitheme   : solarized_light
+widgets   : [mathjax, bootstrap]
+mode      : selfcontained
 
+---
 ## Introducing HITCalculator v1.0!
 
 1. <h3>What this shiny app does:</h3>

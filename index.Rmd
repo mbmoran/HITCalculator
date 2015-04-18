@@ -2,8 +2,6 @@
 title: HITCalculator v1.0
 author: M.B. Moran - 18 April 2015
 framework: deckjs
-deckjs:
-  theme: web-2.0
 highlighter: highlight.js
 hitheme    : solarized_light
 widgets    : [mathjax, bootstrap, quiz, shiny, interactive]
